@@ -11,5 +11,11 @@ Only standard libraries are used.
 - View the DB - SHOW DATABASE
 - Delete DB - DROP DATABASE
 
+# It is expected in the next version.
+
+- Creating a table
+- Add melons to tables
+- View data from tables
+
 # P. S.
 Sorry for my English
