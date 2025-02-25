@@ -1,6 +1,6 @@
 # LoDB
 
-I decided to create a database in Python. One weekend, I had nothing to do, so I decided to make a DBMS. It took about a week and I decided to upload my work to the court.
+I decided to create a program for management databaseы in Python. One weekend, I had nothing to do, so I decided to make a DBMS. It took about a week and I decided to upload my work to the court.
 
 # Python library
 Only standard libraries are used.
