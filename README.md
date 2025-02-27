@@ -14,7 +14,7 @@ Only standard libraries are used.
 # It is expected in the next version.
 
 - Creating a table
-- Add melons to tables
+- Add data to tables
 - View data from tables
 
 # P. S.
