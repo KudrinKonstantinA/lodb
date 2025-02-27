@@ -20,13 +20,24 @@ splt = {
         'error' : '', 
         'arg' : None
     }, 
-    'CREAT' : {
+    'CREATE' : {
         'name' : None, 
         'error' : 'What to creat?', 
         'arg' : {
             'DATABASE' : {
                 'name' : 'CREAT_DB',
                 'error' : 'What is the name of the database?',
+                'arg' : {
+                    'input' : {
+                        'name' : 'input',
+                        'error' : '',
+                        'arg' : None
+                    }
+                }
+            },
+            'TABLE' : {
+                'name' : 'CREAT_TABLE',
+                'error' : 'What is the name of the table?',
                 'arg' : {
                     'input' : {
                         'name' : 'input',
@@ -64,16 +75,25 @@ splt = {
                 }
             }
         }
+    },
+    'USE' : {
+        'name' : 'USE_DB',
+        'error' : 'What is the name of the database?',
+        'arg' : {
+            'input' : {
+                'name' : 'input',
+                'error' : '',
+                'arg' : None
+            }
+        }
     }
-}   
+}
 def exit():
     print('Goodbay, user!')
     time.sleep(1)
     sys.exit(0) 
 
 def user():
-    global is_bool 
-    is_bool= False
     query = input("\033[0mlodb>")
     if len(query.split()) > 0:
         #ЕСЛИ БОЛЬШЕ 0 АРГУМЕНТОВ
@@ -82,53 +102,44 @@ def user():
                 if splt[i1]['error'] == '' and splt[i1]['name'] != None:
                     a = splt[i1]['name']
                     globals()[a]()
-                    is_bool = True
-                    break
+                    return 0
                 elif len(query.split()) > 1:
                     #ЕСЛИ БОЛЬШЕ 1 АРГУМЕНТА
                     for i2 in splt[i1]['arg']:
-                        if splt[i1]['arg'][i2]['error'] == '' and splt[i1]['arg'][i2]['name'] != None:
-                            if splt[i1]['arg'][i2]['name'] == 'input':
-                                a = splt[i1]['name']
-                                fun = getattr(db, a)
-                                fun(query.split()[2])
-                                is_bool = True
-                                break
-                            else:
+                        if query.split()[1] == i2:
+                            if splt[i1]['arg'][i2]['error'] == '' and splt[i1]['arg'][i2]['name'] != None:
                                 a = splt[i1]['arg'][i2]['name']
                                 fun = getattr(db, a)
                                 fun()
-                                is_bool = True
-                                break
-                        elif len(query.split()) > 2:
+                                return 0
+                            elif len(query.split()) > 2:
                             #ЕСЛИ БОЛЬШЕ 2 АРГУМЕНТОВ
-                            for i3 in splt[i1]['arg'][i2]['arg']:
-                                if splt[i1]['arg'][i2]['arg'][i3]['error'] == '' and splt[i1]['arg'][i2]['arg'][i3]['name'] != None:
-                                    if splt[i1]['arg'][i2]['arg'][i3]['name'] == 'input':
-                                        a = splt[i1]['arg'][i2]['name']
-                                        fun = getattr(db, a)
-                                        fun(query.split()[2])
-                                        is_bool = True
-                                        break
-                                    else:
-                                        a = splt[i1]['arg'][i2]['arg'][i3]['name']
-                                        fun = getattr(db, a)
-                                        is_bool = True
-                                        break
-                                else:
-                                    print(splt[i1]['arg'][i2]['arg'][i3]['error'])
-                                    is_bool = True
-                                    break
-                        else:
-                            print(splt[i1]['arg'][i2]['error'])
-                            is_bool = True
-                            break
+                                for i3 in splt[i1]['arg'][i2]['arg']:
+                                    if query.split()[2] == i3:
+                                        if splt[i1]['arg'][i2]['arg'][i3]['error'] == '' and splt[i1]['arg'][i2]['arg'][i3]['name'] != None:
+                                            a = splt[i1]['arg'][i2]['arg'][i3]['name']
+                                            fun = getattr(db, a)
+                                            return 0
+                                        else:
+                                            print(splt[i1]['arg'][i2]['arg'][i3]['error'])
+                                            return 1
+                                    elif splt[i1]['arg'][i2]['arg'][i3]['name'] == 'input':
+                                            a = splt[i1]['arg'][i2]['name']
+                                            fun = getattr(db, a)
+                                            fun(query.split()[2])
+                                            return 0
+                            else:
+                                print(splt[i1]['arg'][i2]['error'])
+                                return 1
+                        elif splt[i1]['arg'][i2]['name'] == 'input':
+                                a = splt[i1]['name']
+                                fun = getattr(db, a)
+                                fun(query.split()[1])
+                                return 0
                 else:
                     print(splt[i1]['error'])
-                    is_bool = True
-                    break
-
-    if is_bool == False:
+                    return 1
+    if len(query.split()) != 0:
         print('\033[31mNotFoundCommand')   
 
 def prog():
