@@ -1,6 +1,7 @@
 import db
 import sys
 import time
+
 def logo():
     print('///        ///-----\\\\\\       |||-----\\\\\\  |||-----\\\\\\')
     print('///        |||     |||       |||     |||  |||     |||')
@@ -13,169 +14,53 @@ def logo():
     print('')
     print('Hello, user!')
 
-
-splt = {
-    'exit' : {
-        'name' : 'exit', 
-        'error' : '', 
-        'arg' : None
-    }, 
-    'CREATE' : {
-        'name' : None, 
-        'error' : 'What to creat?', 
-        'arg' : {
-            'DATABASE' : {
-                'name' : 'CREAT_DB',
-                'error' : 'What is the name of the database?',
-                'arg' : {
-                    'input' : {
-                        'name' : 'input',
-                        'error' : '',
-                        'arg' : None
-                    }
-                }
-            },
-            'TABLE' : {
-                'name' : 'CREAT_TABLE',
-                'error' : 'What is the name of the table?',
-                'arg' : {
-                    'input' : {
-                        'name' : 'input',
-                        'error' : '',
-                        'arg' : None
-                    }
-                }
-            }
-        }
-    },
-    'SHOW' : {
-        'name' : None,
-        'error' : 'What to show?',
-        'arg' : {
-            'DATABASE' : {
-                'name' : 'SHOW_DB',
-                'error' : '',
-                'arg' : None
-            }
-        }
-    },
-    'DROP' : {
-        'name' : None, 
-        'error' : 'What to drop?', 
-        'arg' : {
-            'DATABASE' : {
-                'name' : 'DROP_DB',
-                'error' : 'What is the name of the database?',
-                'arg' : {
-                    'input' : {
-                        'name' : 'input',
-                        'error' : '',
-                        'arg' : None
-                    }
-                }
-            }
-        }
-    },
-    'USE' : {
-        'name' : 'USE_DB',
-        'error' : 'What is the name of the database?',
-        'arg' : {
-            'input' : {
-                'name' : 'input',
-                'error' : '',
-                'arg' : None
-            }
-        }
-    }
-}
 def exit():
     print('Goodbay, user!')
     time.sleep(1)
     sys.exit(0) 
 
-def user():
-    query = input("\033[0mlodb>")
-    if len(query.split()) > 0:
-        #ЕСЛИ БОЛЬШЕ 0 АРГУМЕНТОВ
-        for i1 in splt:
-            if query.split()[0] == i1:
-                if splt[i1]['error'] == '' and splt[i1]['name'] != None:
-                    a = splt[i1]['name']
-                    globals()[a]()
-                    return 0
-                elif len(query.split()) > 1:
-                    #ЕСЛИ БОЛЬШЕ 1 АРГУМЕНТА
-                    for i2 in splt[i1]['arg']:
-                        if query.split()[1] == i2:
-                            if splt[i1]['arg'][i2]['error'] == '' and splt[i1]['arg'][i2]['name'] != None:
-                                a = splt[i1]['arg'][i2]['name']
-                                fun = getattr(db, a)
-                                fun()
-                                return 0
-                            elif len(query.split()) > 2:
-                            #ЕСЛИ БОЛЬШЕ 2 АРГУМЕНТОВ
-                                for i3 in splt[i1]['arg'][i2]['arg']:
-                                    if query.split()[2] == i3:
-                                        if splt[i1]['arg'][i2]['arg'][i3]['error'] == '' and splt[i1]['arg'][i2]['arg'][i3]['name'] != None:
-                                            a = splt[i1]['arg'][i2]['arg'][i3]['name']
-                                            fun = getattr(db, a)
-                                            return 0
-                                        else:
-                                            print(splt[i1]['arg'][i2]['arg'][i3]['error'])
-                                            return 1
-                                    elif splt[i1]['arg'][i2]['arg'][i3]['name'] == 'input':
-                                            a = splt[i1]['arg'][i2]['name']
-                                            fun = getattr(db, a)
-                                            fun(query.split()[2])
-                                            return 0
-                            else:
-                                print(splt[i1]['arg'][i2]['error'])
-                                return 1
-                        elif splt[i1]['arg'][i2]['name'] == 'input':
-                                a = splt[i1]['name']
-                                fun = getattr(db, a)
-                                fun(query.split()[1])
-                                return 0
-                else:
-                    print(splt[i1]['error'])
-                    return 1
-    if len(query.split()) != 0:
-        print('\033[31mNotFoundCommand')   
+def user(qerry):
+    parts = qerry.strip().split()
+    if len(parts) > 0:
+        i = 0
+        while i < len(parts):
+            found = False
+            for cmd in sorted(commands.keys(), key=lambda x: -len(x)):
+                cmd_len = len(cmd)
+                if i + cmd_len <= len(parts) and tuple(parts[i:i+cmd_len]) == cmd:
+                    func = commands[cmd]
+                    args = parts[i+cmd_len:]
+                    func(*args)
+                    i += cmd_len
+                    found = True
+                    return
+            if not found:
+                i += 1 
 
-def prog():
-    query = sys.argv
-    if len(query) > 1:
-        if query[1] == "CREAT":
-            if len(query) > 2:
-                if  query[2] == "DATABASE":
-                    if len(query) > 3:
-                        db.CREAT_DB(query[3])
-                        sys.exit()
-                    else:
-                        print('WARNING:The name of the database being created is not specified')
-                        sys.exit()
-                else:
-                    print('ERROR:NotFoundCommand')
-                    sys.exit()
-            else:
-                print('WARNING:The type of the object being created is not specified')
-                sys.exit()
-        elif query[1] == "SHOW":
-            if  query[2] == "DATABASE":
-                db.SHOW_DB()
-            else:
-                print('ERROR:NotFoundCommand')
-                sys.exit()
-        else:
-            print('ERROR:NotFoundCommand')
-            sys.exit()
+        for a in commands:
+            list1 = list(a)
+            for b in list1:
+                for c in parts:
+                    if b == c:
+                        print('Incomplete command')
+                        return
 
-if len(sys.argv) > 1:
-    prog()
+commands = {
+    ("CREATE", "DATABASE"): db.CREATE_DB,
+    ("SHOW", "DATABASE"): db.SHOW_DB,
+    ("DROP", "DATABASE"): db.DROP_DB,
+    ("USE",): db.USE_DB,
+    ("exit",): exit,
+}
 
-if len(sys.argv) < 2:
-        logo()
-
+logo()
+while True:
+    if db.use_db != None:
+        qerry = input(f"lodb>{db.use_db}>")
+        user(qerry)
+    else:
+        qerry = input(f"lodb>")
+        user(qerry)
 while True:
     if len(sys.argv) < 2:
         user()
