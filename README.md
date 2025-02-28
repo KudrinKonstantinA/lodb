@@ -13,6 +13,8 @@ Only standard libraries are used.
 - Using DB - USE
 - Creating a table - CREATE TABLE
 
+All documentanion: https://github.com/lo-proger/lodb/wiki
+
 # It is expected in the next version.
 
 - Add data to tables
