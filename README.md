@@ -7,13 +7,14 @@ Only standard libraries are used.
 
 # Not much documentation
 
-- Creating a DB - CREAT DATABASE
+- Creating a DB - CREATE DATABASE
 - View the DB - SHOW DATABASE
 - Delete DB - DROP DATABASE
+- Using DB - USE
+- Creating a table - CREATE TABLE
 
 # It is expected in the next version.
 
-- Creating a table
 - Add data to tables
 - View data from tables
 
