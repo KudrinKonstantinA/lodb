@@ -2,6 +2,11 @@ import db
 import sys
 import time
 
+def exit():
+    print('Goodbay, user!')
+    time.sleep(1)
+    sys.exit(0) 
+
 def logo():
     print('///        ///-----\\\\\\       |||-----\\\\\\  |||-----\\\\\\')
     print('///        |||     |||       |||     |||  |||     |||')
@@ -14,54 +19,52 @@ def logo():
     print('')
     print('Hello, user!')
 
-def exit():
-    print('Goodbay, user!')
-    time.sleep(1)
-    sys.exit(0) 
+commands = {
+    ("CREATE", "DATABASE", "arg"): db.CREATE_DB,
+    ("SHOW", "DATABASE", "arg"): db.SHOW_DB,
+    ("DROP", "DATABASE", "arg"): db.DROP_DB,
+    ("USE", "arg"): db.USE_DB,
+    ("EXIT",): exit,
+}
 
-def user(qerry):
-    parts = qerry.strip().split()
-    if len(parts) > 0:
+def user(query):
+    query = query.strip().split()
+    query_commands = []  
+    query_args = [] 
+
+    for word in query:
+        if word.isupper():
+            query_commands.append(word)
+        else:
+            query_args.append(word)
+            query_commands.append("arg")
+
+    if len(query_commands) > 0:
         i = 0
-        while i < len(parts):
-            found = False
+        while i < len(query_commands):
             for cmd in sorted(commands.keys(), key=lambda x: -len(x)):
                 cmd_len = len(cmd)
-                if i + cmd_len <= len(parts) and tuple(parts[i:i+cmd_len]) == cmd:
+                if i + cmd_len <= len(query_commands) and tuple(query_commands[i:i+cmd_len]) == cmd:
                     func = commands[cmd]
-                    args = parts[i+cmd_len:]
+                    args = query_args
                     func(*args)
-                    i += cmd_len
-                    found = True
                     return
-            if not found:
-                i += 1 
+            i += 1 
 
         for a in commands:
             list1 = list(a)
             for b in list1:
-                for c in parts:
+                for c in query_commands:
                     if b == c:
                         print('Incomplete command')
                         return
 
-commands = {
-    ("CREATE", "DATABASE"): db.CREATE_DB,
-    ("SHOW", "DATABASE"): db.SHOW_DB,
-    ("DROP", "DATABASE"): db.DROP_DB,
-    ("USE",): db.USE_DB,
-    ("exit",): exit,
-}
-
-logo()
+logo()                   
 while True:
     if db.use_db != None:
-        qerry = input(f"lodb>{db.use_db}>")
-        user(qerry)
+        query = input(f"lodb>{db.use_db}>")
+        user(query)
     else:
-        qerry = input(f"lodb>")
-        user(qerry)
-while True:
-    if len(sys.argv) < 2:
-        user()
-    
+        query = input(f"lodb>")
+        user(query)
+
