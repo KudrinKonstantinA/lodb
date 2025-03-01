@@ -21,10 +21,11 @@ def logo():
 
 commands = {
     ("CREATE", "DATABASE", "arg"): db.CREATE_DB,
-    ("SHOW", "DATABASE", "arg"): db.SHOW_DB,
+    ("SHOW", "DATABASE"): db.SHOW_DB,
     ("DROP", "DATABASE", "arg"): db.DROP_DB,
     ("USE", "arg"): db.USE_DB,
     ("EXIT",): exit,
+    ("CREATE", "TABLE", "arg"): db.CREAT_TABLE,
 }
 
 def user(query):
@@ -67,4 +68,3 @@ while True:
     else:
         query = input(f"lodb>")
         user(query)
-
