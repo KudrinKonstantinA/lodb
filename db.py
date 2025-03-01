@@ -120,3 +120,4 @@ def CREAT_TABLE(*args):
             print('An unexpected error has occurred')
     else:
         print('None arguments')
+
